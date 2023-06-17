@@ -11,7 +11,7 @@ class Calculator:
     def start(self):
         self.list = self.joinNumbers(self.maintext)
         self.list = self.removeBrackets(self.list)
-        print(self.list)
+        print(f'End of Processing: {self.list}')
 
     def joinNumbers(self,text):
         prevNumberIsInt = [False,False]
@@ -54,24 +54,24 @@ class Calculator:
         return wholeList
 
     
-    def removeBrackets(self,list):
-        # PROCESS Solve THE BRACKETS
-        tempList = list
-        if "(" in tempList:
-            idx = tempList.index("(")
-            endIdx = tempList.index(")")
+    def removeBrackets(self,inputList):
+        stack = []  # Stack to keep track of nested structure
+        result = []  # Current result list
+        for char in inputList:
+            if char == '(':  # Opening parenthesis encountered
+                stack.append(result)  # Push the current result list onto the stack
+                result = []  # Create a new empty result list
+            elif char == ')':  # Closing parenthesis encountered
+                if stack:
+                    prev_result = stack.pop()  # Pop the previous result list from the stack
+                    prev_result.append(result)  # Append the current result list to the previous result list
+                    result = prev_result  # Update the result to the previous result list
+            else:
+                result.append(char)  # Append characters other than parentheses to the current result list
+        return result
 
-            print(list)
 
-            listTOSOLVE = tempList[idx:endIdx+1]
 
-            del tempList[idx:endIdx+1]
-            answer = solve(listTOSOLVE)
-
-            tempList.insert(idx, answer)
-            return tempList
-        else:
-            return tempList
 
 Calc = Calculator('(2+24)/(20*50)')
 Calc.start()
