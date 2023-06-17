@@ -1,10 +1,17 @@
+def solve(formula):
+    #function to solve the formula and return an answer
+    #Use BODMAS
+    return 0
+
 class Calculator:
     def __init__(self,text):
         self.maintext = text
+        self.list = []
         
     def start(self):
-        print(self.joinNumbers(self.maintext))
-        self.removeBrackets(self.maintext)
+        self.list = self.joinNumbers(self.maintext)
+        self.list = self.removeBrackets(self.list)
+        print(self.list)
 
     def joinNumbers(self,text):
         prevNumberIsInt = [False,False]
@@ -35,7 +42,7 @@ class Calculator:
                 except ValueError:
                     pass
                 else:
-                    print(f'Just Poped: {wholeList[a]}')
+                    #print(f'Just Poped: {wholeList[a]}')
                     wholeList.pop(a)
                     
             elif currentNumberIsInt[0] == True:
@@ -47,11 +54,24 @@ class Calculator:
         return wholeList
 
     
-    def removeBrackets(self,text):
-        # todo PROCESS ALL THE BRACKETS
-        pass
+    def removeBrackets(self,list):
+        # PROCESS Solve THE BRACKETS
+        tempList = list
+        if "(" in tempList:
+            idx = tempList.index("(")
+            endIdx = tempList.index(")")
+
+            print(list)
+
+            listTOSOLVE = tempList[idx:endIdx+1]
+
+            del tempList[idx:endIdx+1]
+            answer = solve(listTOSOLVE)
+
+            tempList.insert(idx, answer)
+            return tempList
+        else:
+            return tempList
 
 Calc = Calculator('(2+24)/(20*50)')
 Calc.start()
-
-#This is for a test commit push.
