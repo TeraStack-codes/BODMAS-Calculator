@@ -1,8 +1,3 @@
-def solve(formula):
-    #function to solve the formula and return an answer
-    #Use BODMAS
-    return 0
-
 class Calculator:
     def __init__(self,text):
         self.maintext = text
