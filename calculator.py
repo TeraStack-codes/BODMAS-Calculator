@@ -1,72 +1,76 @@
 class Calculator:
-    def __init__(self,text):
+    def __init__(self, text):
         self.maintext = text
         self.list = []
-        
+
     def start(self):
-        self.list = self.joinNumbers(self.maintext)
+        self.list = self.tokenize(self.maintext)
         self.list = self.removeBrackets(self.list)
+        self.list = self.evaluate(self.list)
         print(f'End of Processing: {self.list}')
 
-    def joinNumbers(self,text):
-        prevNumberIsInt = [False,False]
-        currentNumberIsInt = [False,False]
-        wholeList = []
-        for part in text:
-            try:
-                int(part)
-                currentNumberIsInt[0] = True
-                currentNumberIsInt[1] = part
-            except ValueError:
-                wholeList.append(part)
-                currentNumberIsInt[0] = False
-                currentNumberIsInt[1] = False
-                
+    def tokenize(self, text):
+        operators = ['+', '-', '*', '/', '^', '(', ')']
+        tokens = []
+        current_number = ""
 
-            if currentNumberIsInt[0] == True and prevNumberIsInt[0] == True:
-                newPart = prevNumberIsInt[1] + currentNumberIsInt[1]
-                wholeList.append(newPart)
-                z = []
-                for x,y in enumerate(wholeList):
-                    if y != prevNumberIsInt[1]:
-                        pass
-                    else:
-                        z.append(x)
-                try:
-                    a = max(z)
-                except ValueError:
-                    pass
-                else:
-                    #print(f'Just Poped: {wholeList[a]}')
-                    wholeList.pop(a)
-                    
-            elif currentNumberIsInt[0] == True:
-                wholeList.append(part)
-            
-            prevNumberIsInt[0] = currentNumberIsInt[0]
-            prevNumberIsInt[1] = currentNumberIsInt[1]
-        
-        return wholeList
+        for char in text:
+            if char.isdigit() or char == '.':
+                current_number += char
+            elif char in operators:
+                if current_number:
+                    tokens.append(current_number)
+                    current_number = ""
+                tokens.append(char)
 
-    
-    def removeBrackets(self,inputList):
-        stack = []  # Stack to keep track of nested structure
-        result = []  # Current result list
+        if current_number:
+            tokens.append(current_number)
+
+        return tokens
+
+    def removeBrackets(self, inputList):
+        stack = []
+        result = []
+
         for char in inputList:
-            if char == '(':  # Opening parenthesis encountered
-                stack.append(result)  # Push the current result list onto the stack
-                result = []  # Create a new empty result list
-            elif char == ')':  # Closing parenthesis encountered
+            if char == '(':
+                stack.append(result)
+                result = []
+            elif char == ')':
                 if stack:
-                    prev_result = stack.pop()  # Pop the previous result list from the stack
-                    prev_result.append(result)  # Append the current result list to the previous result list
-                    result = prev_result  # Update the result to the previous result list
+                    prev_result = stack.pop()
+                    prev_result.append(result)
+                    result = prev_result
             else:
-                result.append(char)  # Append characters other than parentheses to the current result list
+                result.append(char)
+
         return result
 
+    def evaluate(self, expression):
+        if isinstance(expression, list):
+            if len(expression) == 3:
+                operand1 = self.evaluate(expression[0])
+                operator = expression[1]
+                operand2 = self.evaluate(expression[2])
+
+                if operator == '+':
+                    return operand1 + operand2
+                elif operator == '-':
+                    return operand1 - operand2
+                elif operator == '*':
+                    return operand1 * operand2
+                elif operator == '/':
+                    return operand1 / operand2
+                elif operator == '^':
+                    return operand1 ** operand2
+                else:
+                    print("Invalid operator!")
+                    return None
+            else:
+                return self.evaluate(expression[0])
+        else:
+            return float(expression)
 
 
-
-Calc = Calculator('(2+24)/(20*50)')
+Calc = Calculator('(3846*3846) + (394374*394374) + 2*(3846*394374)')
 Calc.start()
